@@ -1,0 +1,9 @@
+{
+    "java.project.referencedLibraries": [
+        "c:\\Users\\ryan\\scoop\\apps\\gradle\\current\\.gradle\\caches\\modules-2\\files-2.1\\io.github.jason-lang\\jason-interpreter\\3.3.0\\3c0fae64839e6566abeb9ed42ab63255e570f972\\jason-interpreter-3.3.0.jar"
+    ],
+    "java.project.sourcePaths": [
+        "hello_world\\src\\env",
+        "c:\\Users\\ryan\\scoop\\apps\\gradle\\current\\.gradle\\caches\\modules-2\\files-2.1\\io.github.jason-lang\\jason-interpreter\\3.3.0\\3c0fae64839e6566abeb9ed42ab63255e570f972"
+    ]
+}
