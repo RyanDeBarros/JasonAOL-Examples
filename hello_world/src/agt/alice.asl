@@ -8,5 +8,8 @@
 
 /* Plans */
 
-// +!start : true <- .print("hello world.").
 +!start : true <- .send(bob, tell, hello).
+
++hello[source(A)]
+    <-  .print("I received a hello from ", A);
+        .send(A, tell, hello).

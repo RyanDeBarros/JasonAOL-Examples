@@ -14,7 +14,8 @@ MAS hello_world {
 
     environment: example.Env(10)
 
-    agents: bob;
+    agents: liz;
+            bob;
             alice;
 
     aslSourcePath: "src/agt";
