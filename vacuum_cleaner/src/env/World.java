@@ -43,7 +43,7 @@ public class World extends Environment {
     private void spawnContinuousDirt() {
         new Thread(() -> {
             while (isRunning()) {
-                if (r.nextDouble() < 0.35) {
+                if (r.nextDouble() < 0.45) {
                     dirty[r.nextInt(2)][r.nextInt(2)] = true;
                     gui.paint();
                     addPercepts();

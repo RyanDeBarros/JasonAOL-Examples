@@ -5,14 +5,27 @@
 /* Initial goals */
 
 !start.
+!act.
+!pause.
 
 /* Plans */
 
 +!start : true <- .print("Hello!").
 
-+dirty <- .print("On dirty spot!"); suck.
-+clean <- .print("Dirt is cleaned!").
-+pos(1) <- right.
-+pos(2) <- down.
-+pos(3) <- up.
-+pos(4) <- left.
+-!act <- !act.
++!act : dirty <- suck; !act.
++!act : clean <- !move; !act.
+
++!move : pos(1) <- right.
++!move : pos(2) <- down.
++!move : pos(3) <- up.
++!move : pos(4) <- left.
+
++!pause <-
+    .wait(2000);
+    .suspend(act);
+    .print("Pausing...");
+    .wait(1000);
+    .print("Back to cleaning");
+    .resume(act);
+    !pause.
