@@ -2,10 +2,13 @@
 
 import jason.asSyntax.*;
 import jason.environment.*;
-import jason.asSyntax.parser.*;
 
 import java.util.Random;
 import java.util.logging.*;
+
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.border.*;
 
 public class World extends Environment {
 
@@ -20,6 +23,7 @@ public class World extends Environment {
     // World state
     private boolean dirty[][] = { { true, true }, { true, true } };
     private Random r = new Random();
+    private RoomGUI gui = new RoomGUI();
 
     // Perceptions
     private static final Literal Ldirty = ASSyntax.createLiteral("dirty");
@@ -39,14 +43,18 @@ public class World extends Environment {
     private void spawnContinuousDirt() {
         new Thread(() -> {
             while (isRunning()) {
-                try {
-                    if (r.nextDouble() < 0.2) {
-                        dirty[r.nextInt(2)][r.nextInt(2)] = true;
-                    }
+                if (r.nextDouble() < 0.35) {
+                    dirty[r.nextInt(2)][r.nextInt(2)] = true;
+                    gui.paint();
+                    addPercepts();
+                }
 
+                try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    if (isRunning()) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }).start();
@@ -79,7 +87,9 @@ public class World extends Environment {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            if (isRunning()) {
+                e.printStackTrace();
+            }
         }
 
         synchronized (modelLock) {
@@ -111,6 +121,7 @@ public class World extends Environment {
         }
 
         addPercepts();
+        gui.paint();
         return true;
     }
 
@@ -118,5 +129,46 @@ public class World extends Environment {
     @Override
     public void stop() {
         super.stop();
+        gui.setVisible(false);
+    }
+    
+    private class RoomGUI extends JFrame {
+        JLabel[][] labels;
+
+        RoomGUI() {
+            super("Vacuum Cleaner Robot");
+            labels = new JLabel[dirty.length][dirty.length];
+            getContentPane().setLayout(new GridLayout(labels.length, labels.length));
+            for (int j = 0; j < labels.length; j++) {
+                for (int i = 0; i < labels.length; i++) {
+                    labels[i][j] = new JLabel();
+                    labels[i][j].setPreferredSize(new Dimension(180,180));
+                    labels[i][j].setHorizontalAlignment(JLabel.CENTER);
+                    labels[i][j].setBorder(new EtchedBorder());
+                    getContentPane().add(labels[i][j]);
+                }
+            }
+            pack();
+            setVisible(true);
+            paint();
+        }
+
+        void paint() {
+            synchronized (modelLock) { // do not allow changes in the robot location while painting
+                for (int i = 0; i < labels.length; i++) {
+                    for (int j = 0; j < labels.length; j++) {
+                        String l = "<html><center>";
+                        if (posX == i && posY == j) {
+                            l += "<font color=\"red\" size=7><b>Robot</b><br></font>";
+                        }
+                        if (dirty[i][j]) {
+                            l += "<font color=\"blue\" size=6>*dirt*</font>";
+                        }
+                        l += "</center></html>";
+                        labels[i][j].setText(l);
+                    }
+                }
+            }
+        }
     }
 }
